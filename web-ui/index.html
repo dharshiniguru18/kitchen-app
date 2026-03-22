@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Kitchen Dashboard</title>
+
+<style>
+:root {
+  --bg: #0b1120;
+  --card: #111827;
+  --border: #263347;
+  --text: #e5e7eb;
+  --muted: #9ca3af;
+  --blue: #58a6ff;
+  --green: #3fb950;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 30px 20px;
+}
+
+h1 {
+  font-size: 28px;
+  margin-bottom: 5px;
+  color: var(--blue);
+}
+
+.subtitle {
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+
+.status {
+  background: rgba(63,185,80,0.1);
+  border: 1px solid var(--green);
+  padding: 10px;
+  border-radius: 8px;
+  color: var(--green);
+  margin-bottom: 20px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+}
+
+input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: #0d1117;
+  color: white;
+}
+
+button {
+  padding: 10px 15px;
+  border-radius: 8px;
+  border: none;
+  background: var(--blue);
+  color: white;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.85;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 10px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+
+th {
+  color: var(--muted);
+}
+
+.footer {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <h1>🍽 Smart Kitchen Dashboard</h1>
+  <div class="subtitle">Real-Time Order Monitoring System</div>
+
+  <div class="status">
+    ✔ Docker Compose Running Successfully
+  </div>
+
+  <div class="card">
+    <div class="row">
+      <input id="dish" placeholder="Enter dish name..." />
+      <button onclick="createOrder()">Create</button>
+    </div>
+    <div id="msg" class="footer"></div>
+  </div>
+
+  <div class="card">
+    <h3>Orders</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Dish</th>
+          <th>Status</th>
+          <th>Created</th>
+        </tr>
+      </thead>
+      <tbody id="orders"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<script>
+const API = "http://localhost:3000";
+
+async function loadOrders() {
+  try {
+    const res = await fetch(API + "/orders");
+    const data = await res.json();
+
+    const tbody = document.getElementById("orders");
+    tbody.innerHTML = "";
+
+    data.forEach(o => {
+      const row = `
+        <tr>
+          <td>${o.dish}</td>
+          <td>${o.status}</td>
+          <td>${new Date(o.createdAt).toLocaleString()}</td>
+        </tr>`;
+      tbody.innerHTML += row;
+    });
+  } catch {
+    document.getElementById("orders").innerHTML =
+      "<tr><td colspan='3'>API not reachable</td></tr>";
+  }
+}
+
+async function createOrder() {
+  const dish = document.getElementById("dish").value;
+
+  if (!dish) {
+    document.getElementById("msg").innerText = "Enter dish name";
+    return;
+  }
+
+  await fetch(API + "/orders", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ dish })
+  });
+
+  document.getElementById("dish").value = "";
+  document.getElementById("msg").innerText = "Order created";
+  loadOrders();
+}
+
+loadOrders();
+setInterval(loadOrders, 4000);
+</script>
+
+</body>
+</html>
