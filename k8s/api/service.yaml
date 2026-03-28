@@ -4,10 +4,10 @@ metadata:
   name: api
   namespace: kitchen-app
 spec:
-  type: NodePort
+  type: NodePort   #  CHANGE THIS
   selector:
-    app: kitchen-api
+    app: api
   ports:
     - port: 3000
       targetPort: 3000
-      nodePort: 30000
+      nodePort: 30081   #  ADD THIS

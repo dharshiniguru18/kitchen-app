@@ -1,87 +1,178 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Smart Kitchen Dashboard</title>
+<title>Kitchen Dashboard</title>
 
 <style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
 :root {
-  --bg: #0b1120;
-  --card: #111827;
-  --border: #263347;
-  --text: #e5e7eb;
-  --muted: #9ca3af;
-  --blue: #58a6ff;
-  --green: #3fb950;
+  --bg: #f8f9fb; --surface: #ffffff; --surface2: #f1f3f7;
+  --border: #e2e6ed; --border2: #d0d5de;
+  --text: #111827; --text2: #6b7280; --text3: #9ca3af;
+  --blue: #2563eb; --blue-bg: #eff6ff; --blue-text: #1d4ed8;
+  --green: #16a34a; --green-bg: #f0fdf4; --green-text: #15803d;
+  --amber: #d97706; --amber-bg: #fffbeb; --amber-text: #b45309;
+  --orange: #ea580c; --orange-bg: #fff7ed; --orange-text: #c2410c;
+  --cyan: #0891b2; --cyan-bg: #ecfeff; --cyan-text: #0e7490;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f1117; --surface: #1a1d27; --surface2: #22263a;
+    --border: #2a2f45; --border2: #373d55;
+    --text: #f1f5f9; --text2: #94a3b8; --text3: #64748b;
+    --blue-bg: #1e3a6e; --blue-text: #93c5fd;
+    --green-bg: #14532d; --green-text: #86efac;
+    --amber-bg: #451a03; --amber-text: #fcd34d;
+    --orange-bg: #431407; --orange-text: #fb923c;
+    --cyan-bg: #164e63; --cyan-text: #67e8f9;
+  }
 }
 
 body {
-  margin: 0;
-  font-family: system-ui, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   background: var(--bg);
   color: var(--text);
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 100vh;
 }
 
-.container {
-  max-width: 900px;
-  margin: auto;
-  padding: 30px 20px;
+/* UI styles omitted for brevity? NO — full preserved below */
+
+.topbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 50;
 }
 
-h1 {
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.brand-icon {
+  width: 28px;
+  height: 28px;
+  background: var(--blue-bg);
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.badge-v2 {
+  background: var(--blue-bg);
+  color: var(--blue-text);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 7px;
+  border-radius: 20px;
+}
+
+.api-status {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  color: var(--text2);
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--text3);
+}
+
+.dot.ok { background: var(--green); }
+.dot.err { background: #ef4444; }
+
+.page {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+
+.stat-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text3);
+}
+
+.stat-num {
   font-size: 28px;
-  margin-bottom: 5px;
-  color: var(--blue);
+  font-weight: 700;
 }
 
-.subtitle {
-  color: var(--muted);
-  margin-bottom: 20px;
-}
-
-.status {
-  background: rgba(63,185,80,0.1);
-  border: 1px solid var(--green);
-  padding: 10px;
-  border-radius: 8px;
-  color: var(--green);
-  margin-bottom: 20px;
+.grid {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 14px;
 }
 
 .card {
-  background: var(--card);
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 12px;
-  padding: 15px;
-  margin-bottom: 20px;
+  padding: 18px;
 }
 
-.row {
+.input-row {
   display: flex;
-  gap: 10px;
+  gap: 7px;
 }
 
-input {
+input[type=text] {
   flex: 1;
-  padding: 10px;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface2);
+}
+
+.btn {
+  padding: 9px 16px;
   border-radius: 8px;
   border: 1px solid var(--border);
-  background: #0d1117;
-  color: white;
-}
-
-button {
-  padding: 10px 15px;
-  border-radius: 8px;
-  border: none;
-  background: var(--blue);
-  color: white;
   cursor: pointer;
 }
 
-button:hover {
-  opacity: 0.85;
+.btn-primary {
+  background: var(--blue);
+  color: white;
+}
+
+.msg {
+  font-size: 12px;
+  margin-top: 6px;
 }
 
 table {
@@ -89,106 +180,128 @@ table {
   border-collapse: collapse;
 }
 
-th, td {
+td, th {
   padding: 10px;
   border-bottom: 1px solid var(--border);
-  text-align: left;
-}
-
-th {
-  color: var(--muted);
-}
-
-.footer {
-  font-size: 12px;
-  color: var(--muted);
-  margin-top: 10px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
-
-  <h1>🍽 Smart Kitchen Dashboard</h1>
-  <div class="subtitle">Real-Time Order Monitoring System</div>
-
-  <div class="status">
-    ✔ Docker Compose Running Successfully
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-icon">🍽</div>
+    Kitchen Dashboard
   </div>
+  <div class="api-status">
+    <div class="dot" id="dot"></div>
+    <span id="statusText">Connecting…</span>
+  </div>
+</div>
 
-  <div class="card">
-    <div class="row">
-      <input id="dish" placeholder="Enter dish name..." />
-      <button onclick="createOrder()">Create</button>
+<div class="page">
+
+  <div class="grid">
+
+    <div class="card">
+      <h3>Create order</h3>
+      <div class="input-row">
+        <input type="text" id="dish" placeholder="Dish name..." />
+        <button class="btn btn-primary" onclick="createOrder()">Create</button>
+      </div>
+      <div class="msg" id="msg"></div>
     </div>
-    <div id="msg" class="footer"></div>
-  </div>
 
-  <div class="card">
-    <h3>Orders</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Dish</th>
-          <th>Status</th>
-          <th>Created</th>
-        </tr>
-      </thead>
-      <tbody id="orders"></tbody>
-    </table>
-  </div>
+    <div class="card">
+      <h3>Orders</h3>
+      <table>
+        <thead>
+          <tr><th>Dish</th><th>Status</th></tr>
+        </thead>
+        <tbody id="tbody">
+          <tr><td colspan="2">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
 
+  </div>
 </div>
 
 <script>
-const API = "http://localhost:3000";
+const API = '/api';
+
+async function checkHealth() {
+  try {
+    const res = await fetch(API + '/health');
+    const dot = document.getElementById('dot');
+    const text = document.getElementById('statusText');
+
+    if (res.ok) {
+      dot.className = 'dot ok';
+      text.textContent = 'API Connected';
+    } else {
+      dot.className = 'dot err';
+      text.textContent = 'Error';
+    }
+  } catch {
+    document.getElementById('dot').className = 'dot err';
+    document.getElementById('statusText').textContent = 'Offline';
+  }
+}
 
 async function loadOrders() {
   try {
-    const res = await fetch(API + "/orders");
+    const res = await fetch(API + '/orders');
     const data = await res.json();
+    const tbody = document.getElementById('tbody');
 
-    const tbody = document.getElementById("orders");
-    tbody.innerHTML = "";
+    if (!data.length) {
+      tbody.innerHTML = '<tr><td colspan="2">No orders</td></tr>';
+      return;
+    }
 
-    data.forEach(o => {
-      const row = `
-        <tr>
-          <td>${o.dish}</td>
-          <td>${o.status}</td>
-          <td>${new Date(o.createdAt).toLocaleString()}</td>
-        </tr>`;
-      tbody.innerHTML += row;
-    });
+    tbody.innerHTML = data.map(o =>
+      `<tr><td>${o.dish}</td><td>${o.status}</td></tr>`
+    ).join('');
   } catch {
-    document.getElementById("orders").innerHTML =
-      "<tr><td colspan='3'>API not reachable</td></tr>";
+    document.getElementById('tbody').innerHTML =
+      '<tr><td colspan="2">Error loading</td></tr>';
   }
 }
 
 async function createOrder() {
-  const dish = document.getElementById("dish").value;
+  const dish = document.getElementById('dish').value.trim();
+  const msg = document.getElementById('msg');
 
   if (!dish) {
-    document.getElementById("msg").innerText = "Enter dish name";
+    msg.textContent = 'Enter dish name';
     return;
   }
 
-  await fetch(API + "/orders", {
-    method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({ dish })
-  });
+  try {
+    const res = await fetch(API + '/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ dish })
+    });
 
-  document.getElementById("dish").value = "";
-  document.getElementById("msg").innerText = "Order created";
-  loadOrders();
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data.error);
+
+    msg.textContent = 'Created: ' + data.dish;
+    document.getElementById('dish').value = '';
+
+    loadOrders();
+  } catch (e) {
+    msg.textContent = 'Error: ' + e.message;
+  }
 }
 
+checkHealth();
 loadOrders();
-setInterval(loadOrders, 4000);
+setInterval(loadOrders, 5000);
 </script>
 
 </body>
